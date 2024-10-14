@@ -1,23 +1,14 @@
-#
-#   Hello World client in Python
-#   Connects REQ socket to tcp://localhost:5555
-#
+import socketio
 
-import zmq
+sio = socketio.Client()
 
-context = zmq.Context()
+sio.connect('https://alexanderdepooter.eu.pythonanywhere.com/')
 
-#  Socket to talk to server
-print("Connecting to server…")
-socket = context.socket(zmq.REQ)
-socket.connect("tcp://localhost:5555")
+@sio.on('receive_message')
+def on_message(data):
+    print(f"Message from server: {data['message']}")
 
+message = input("Enter a message to send: ")
+sio.emit('send_message', {'message': message})
 
-while True:
-    sndmsg = input("Send a Message:\n")
-    print("Sending...") 
-    socket.send(bytes(f"{sndmsg}"))
-
-    #  Get the reply.
-    rcvmessage = socket.recv()
-    print("Received reply", rcvmessage)
+sio.wait()

@@ -1,26 +1,27 @@
-#   Hello World server in Python
-#   Binds REP socket to tcp://*:5555
-#   Expects b"Hello" from client, replies with b"World"
-#
+from flask import Flask, render_template
+from flask_socketio import SocketIO, emit
 
-import time
-import os
-import zmq
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'your_secret_key'
+socketio = SocketIO(app, cors_allowed_origins="*")
 
-context = zmq.Context()
-socket = context.socket(zmq.REP)
-socket.bind("tcp://*:5555")
+@app.route('/')
+def home():
+    return render_template('index.html')
 
-log = open("logs.log","a")
+@socketio.on('connect')
+def handle_connect():
+    print("New client connected")
 
-while True:
-    #  Wait for next request from client
-    rcvmessage = socket.recv()
-    print("Received request:" , rcvmessage)
+@socketio.on('send_message')
+def handle_message(data):
+    print(f"Received message: {data['message']}")
+    emit('receive_message', data)
+    print("Message sent")
 
-    #  Do some 'work'
-    log.write(rcvmessage)
-    sendmsg = input("Send a Message:")
+@socketio.on('disconnect')
+def handle_disconnect():
+    print("Client disconnected")
 
-    #  Send reply back to client
-    socket.send(bytes(f"{sendmsg}"))
+if __name__ == '__main__':
+    socketio.run(app)
