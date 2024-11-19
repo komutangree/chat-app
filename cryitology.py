@@ -1,5 +1,5 @@
 from random import randint, choice
-from decryitology import * 
+ 
 
 
 to_encrypt = input("Enter text to encrypt: ")
