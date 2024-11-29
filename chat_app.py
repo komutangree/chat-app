@@ -1,5 +1,4 @@
 import customtkinter as ctk
-import chat_app_func as caf
 import tkinter as tk
 
 #scherm setup
@@ -19,14 +18,14 @@ def send_message():
     if text_input.get():
         label = ctk.CTkLabel(root, text= text_input.get(), font = ("Arial", (20)), bg_color="#384348", corner_radius=1, anchor = "e")
 
-        label.place(x=0, y=30 * caf.text_order)
+        label.place(x=0, y=30 * text_order)
         label.update_idletasks()
 
         x_pos = root.winfo_width() - label.winfo_reqwidth() - 10
-        label.place(x= x_pos,y= 30 * caf.text_order)
+        label.place(x= x_pos,y= 30 * text_order)
 
         text_input.delete(0, ctk.END)
-        caf.text_order += 1
+        text_order += 1
 
 
 keybinds = {
@@ -34,6 +33,7 @@ keybinds = {
 }
 
 #Entry's, Buttons en andere dingen
+text_order = 1
 text_input = ctk.CTkEntry(root, width= 300, height= 80, font=("Arial",(20)))
 text_input.place(x= 10, y= 600)
 send_button = ctk.CTkButton(root, command=send_message, width= 50, height= 80, text="SEND", font=("Arial",(20)))
